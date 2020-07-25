@@ -41,6 +41,7 @@ GetAccount(File)
 	return account_pwd
 }
 
+
 OpenSim()
 {
 
@@ -58,37 +59,37 @@ OpenSim()
 	WinMove, %SimTitle%,,0,0
 	
 	; check Android System started
+	Text_dots:="|<>*137$32.zzzzzwDwDwC1y1y1UTUTUM7s7s61y1y1kzkzkzzzzzy"
 	Loop
 	{
-		PixelGetColor, color, 1300, 521, RGB ; simulator edge color
-		if (color = 0x28303E)
+		if (ok := FindText(0, 0, 1400, 720, 0, 0, Text_dots))
 		{
 			Sleep, 800
-			Click, 1219, 87
+			Click, 5, 765
+			Sleep, 500
 			break
 		}
-		
-		; search pcr bilibili login bottom
-		PixelGetColor, color, 560, 460, RGB
-		if (color = 0x23ADE5)
-			break
 	}
 
 	; click home
 	Click, 1310, 676
 	
-	; check pcr icon
-	Text_pcr:="|<>*150$38.zzzzzzzzzzyzzwwzzDzzDDztzzntw00DtyT003wTnztzzCwTyTzXDXzbzlnws01ytzy00TyQzzbzzDDztzzXtzyTztyDzbzw03k00z06Q00Dzzjzzzzzzzzzzzzzzzy"
+	; check battery icon
+	Text_battery := "|<>*151$12.003s7s7k7k7U7UDw1s1k3U302040000000U"
+
 	Loop
 	{
 		Sleep, 300
 		
-		 if (ok := FindText(0, 0, 1280, 720, 0, 0, Text_pcr))
-		 break
-		 
-		 if (A_Index=50)
+		if (ok := FindText(0, 0, 1280, 720, 0, 0, Text_battery))
 		{
-			MsgBox, Cannot find PCR icon
+			Sleep, 500
+			return
+		}
+
+		if (A_Index=50)
+		{
+			MsgBox, Cannot find battery icon
 			ExitApp
 		}
 	}
@@ -104,81 +105,7 @@ Login(account,pwd)
 	; click pcr app
 	Click, 175, 210
 
-	; click switch account
-	Loop
-	{
-		Sleep, 200
-		Click, 1219, 87
-
-		; search pcr bilibili login bottom
-		PixelGetColor, color, 560, 460, RGB
-		if (color = 0x23ADE5)
-			break
-	}
-	
-	; slect all --> account
-	MouseMove, 480, 310
-	Sleep, 100
-	Send, {LButton Down}
-	Sleep, 1000
-	Send, {LButton Up} 
-	Sleep, 100
-	
-	; delete --> account
-	Send, {BS}
-	Sleep, 100
-	
-	; send --> account
-	Send, %account%
-	Sleep, 100
-	
-	; slect all --> pwd
-	MouseMove, 480, 390
-	Sleep, 100
-	Send, {LButton Down}
-	Sleep, 1000
-	Send, {LButton Up}
-	Sleep, 100
-	
-	; delete --> pwd
-	Send, {BS}
-	Sleep, 100
-	
-	; send --> pwd
-	Send, %pwd%
-	Sleep, 100
-	
-	; click login
-	Click, 650, 450
-	Sleep, 100
-	
-	; wait login 1
-	Loop 
-	{
-		Sleep 2000
-		Click, %Bottom_lb_x%, %Bottom_lb_y%
-		Sleep 100
-		
-		if (IsHome())
-		{
-			break
-		}
-		
-	}
-	
-	; wait login 2
-	Loop 
-	{
-		Sleep 2000
-		Click, %Bottom_lb_x%, %Bottom_lb_y%
-		Sleep 100
-		
-		if (IsHome())
-		{
-			break
-		}
-		
-	}
+	LoginNewAccount(account, pwd)
 
 }
 
@@ -188,11 +115,14 @@ SwitchAccount(account,pwd)
 	global Bottom_home_menu_x
 	global Bottom_home_menu_y
 	
+	
 	GoHome()
+
+	Sleep, 1000
 
 	; click main menu
 	Click, %Bottom_home_menu_x%, %Bottom_home_menu_y%
-	Sleep, 1000
+	Sleep, 3000
 
 	; click back to logo page
 	Click, 200, 600
@@ -201,7 +131,13 @@ SwitchAccount(account,pwd)
 	; click OK
 	Click, 700, 550
 	Sleep, 1000
+	
+	LoginNewAccount(account, pwd)
+}
 
+
+LoginNewAccount(account, pwd)
+{
 	; click switch account
 	Loop
 	{
@@ -253,9 +189,15 @@ SwitchAccount(account,pwd)
 	; wait login 1
 	Loop 
 	{
-		Sleep 2000
+		Sleep 1000
 		Click, %Bottom_lb_x%, %Bottom_lb_y%
 		Sleep 100
+		
+		; ------- ID certification
+		IDcertification()
+		
+		; ------- LanDeSuoErBei --------
+		LanDeSuoErBei()
 		
 		if (IsHome())
 		{
@@ -267,7 +209,7 @@ SwitchAccount(account,pwd)
 	; wait login 2
 	Loop 
 	{
-		Sleep 2000
+		Sleep 1000
 		Click, %Bottom_lb_x%, %Bottom_lb_y%
 		Sleep 100
 		
@@ -280,11 +222,64 @@ SwitchAccount(account,pwd)
 }
 
 
+IDcertification()
+{
+	IDFile := "./config/CNID.txt"
+; Findtext: ShiMIngRenZheng
+Text_certification:="|<>*190$54.00000000000000000010300000030300sDzw3U300QTzw1k300ADzw0k300A0A00U30000A00030000A00030000A0TU303sAA0TU303sAA01U300MAA01U3U0MADs1U7U0MADs1U7U0MADs1U7k0MAA01U6k0MAA01UCM0MAA01UAM0MAA01YQA0NAA01gsC0TAA01tk70SAA01vk7USzzw0bU3kBzzy0701U0zzw000000000000000000U"
+
+	if (ok:=FindText(736-150000, 202-150000, 736+150000, 202+150000, 0, 0, Text_certification))
+	{
+		clipboard =  ; 让剪贴板初始为空
+		Run, .\config\CNID.txt
+		WinWaitActive ahk_class PX_WINDOW_CLASS
+		Click, 162, 85
+		Sleep, 100
+		Click, 162, 85
+		Sleep, 500
+		Send, ^c
+		Sleep, 500
+		Send, !{F4}
+		
+		Sleep, 1000
+		Click, 472, 388
+		Send, ^v
+		Sleep, 1000
+		Click, 472, 488
+		Send, 330102199712151815
+		Sleep, 1000
+		Click, 600, 560
+	}
+}
+
+
+LanDeSuoErBei()
+{
+	; find text --> select character 
+	Text_QingXuanZe:="|<>0x424552@0.73$71.000000000000000000000000000E002020000M1U33A0ATy00lzz76M0Mzy00k606As0kkQ00UC06Tz7slk007zk1X0Dkr0000k026060w00wzzb0A0A3w00M00DDzsMQT00k006DyUl2601XzsAAM3sC00360kMMkD7zk06A1UklaS0s00ATz1VXAA1k00Mk6366MM3U00rzw6MDknzy01v0sT001UC003a0lXU030Q006ADX3zyS0s000E0400000U000000000000000000000000000000000001"
+
+	 if (ok:=FindText(538-150000, 195-150000, 538+150000, 195+150000, 0, 0, Text_QingXuanZe))
+	 {
+		; click 1st character
+		Click, 1038, 459
+		Sleep, 1000
+		
+		; click start
+		Click, 1123, 707
+		
+		Sleep, 5000
+		
+		; click skip
+		Click, 1220, 93
+		
+	 }
+}
+
 
 IsHome() 
 {
-	Text_OPEN:="|<>*210$39.zzzzzzznzzzzzs70M3DiSNtDsxbtD1z3gz9t0OBbt0NzNgz9zDvZbvDtzQCSNz6PlwDDw3TDzzzzzzU"
-	if (ok:=FindText(780, 580, 850, 650, 0, 0, Text_OPEN))
+	Text_zoom:="|<>0x6B9EFF@0.88$18.00000800Q00w61y73w7bs7zkDzUDz0Dy0Dz0DzUTzkTzkTz0Tk0M00000U"
+	if (ok:=FindText(0, 0, 1280, 720, 0, 0, Text_zoom))
 		return 1
 	else
 		return 0
@@ -369,7 +364,7 @@ AddEnergy(times)
 	; click get all
 	Click, 1200, 619
 	
-	; find text --> closk
+	; find text --> close
 	Text_GuanBi:="|<>*167$55.0000000000000060000D0D07U0007U7U1lzzU1s7U0Qzzs0Q3U0600w063U0k0MC3zzzkw0Q71zzzsS0C3U07U0D07Vk03k07jzws01s03nzyQ00w01s3sC00S00w3w73zzzwS3y3VzzzyD1r1k07s07VnUs03w03llkQ03r01tksC01tk0xkQ701sQ0SkC3U1sDUD071k1s3w7UzUs3s0zXkTkw7k07ts07y7U01ss03y0000000000000000002"
 	Loop
 	{
@@ -387,6 +382,7 @@ AddEnergy(times)
 	GoHome()
 	
 }
+
 
 AddMana()
 {
@@ -449,6 +445,7 @@ GetGift()
 	global Bottom_lb_x
 	
 	GoHome()
+	Sleep, 1000
 	
 	; click gift bottom
 	Click, %Bottom_home_gift_x%, %Bottom_home_gift_y%
@@ -473,6 +470,7 @@ GetGift()
 	GoHome()
 	
 }
+
 
 GetReward()
 {
@@ -499,6 +497,7 @@ GetReward()
 	GoHome()
 }
 
+
 CloseAll()
 {
 	MouseMove, 640, 360
@@ -523,3 +522,4 @@ CloseAll()
 	Click, 1308, 677
 	Sleep, 500
 }
+

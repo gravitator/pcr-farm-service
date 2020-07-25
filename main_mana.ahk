@@ -1,11 +1,21 @@
 #Include pcr.ahk
 
-UnionName := "GaryFarm"
-CowAccountFile := "account_mana.txt"
+CowAccountFile := ".\config\account_mana.txt"
+ManagerFile := ".\config\account_manager.txt"
+UnionFile := ".\config\farm_name.txt"
 
-; get account info
-FileName := "account_manager.txt"
-File := FileOpen(FileName, "r-d") ;
+; get farm name
+File := FileOpen(UnionFile, "r-d") ;
+if !IsObject(File)
+{
+	MsgBox Can't open "%UnionFile%" for reading.
+	return
+}
+UnionName := File.ReadLine()
+File.Close()
+
+; get manager account info
+File := FileOpen(ManagerFile, "r-d") ;
 if !IsObject(file)
 {
 	MsgBox Can't open "%FileName%" for reading.
@@ -29,6 +39,8 @@ OpenSim()
 
 Loop, 20
 {
+	Sleep, 1000
+
 	account_pwd := GetAccount(File)
 	account := account_pwd[1]
 	pwd := account_pwd[2]
@@ -45,7 +57,9 @@ Loop, 20
 		SwitchAccount(account,pwd)
 	
 	JoinUnion(UnionName)
+	Sleep, 1000
 	GetGift()
+	Sleep, 1000
 	DonateMana()
 	OutputDebug, %account% (%name%) has donated its milk
 }
@@ -54,8 +68,12 @@ Loop, 20
 SwitchAccount(FarmManagerAccount, FarmManagerPwd)
 RemoveToolman()
 
+OutputDebug, cows 1~20 have been removed!
+
 Loop, 20
 {
+	Sleep, 1000
+
 	account_pwd := GetAccount(File)
 	if (account_psd = 0)
 	{
@@ -69,7 +87,9 @@ Loop, 20
 	SwitchAccount(account,pwd)
 	
 	JoinUnion(UnionName)
+	Sleep, 1000
 	GetGift()
+	Sleep, 1000
 	DonateMana()
 	OutputDebug, %account% (%name%) has donated its milk
 }
@@ -78,7 +98,7 @@ Loop, 20
 SwitchAccount(FarmManagerAccount, FarmManagerPwd)
 RemoveToolman()
 
-OutputDebug, All cows' milk have donated!
+OutputDebug, cows 21~40 have been removed!
 
 ExitApp
 
@@ -443,16 +463,30 @@ RemoveToolman()
 		; click Z-A
 		Click, 1201, 169
 	}
+
+	Sleep, 1000
 	
 	Loop, 20
 	{
-		; click member management
-		Click, 985, 320
-		
-		Sleep, 1000
-		
-		; click remove member
-		Click, 867, 284
+		Loop
+		{
+			Sleep, 1000
+			; click member management
+			Click, 985, 320
+			
+			Sleep, 1000
+			
+			; text find: fire
+			Text_KaiChu:="|<>*180$44.0000000000000E00001sC0Dzzlz3k3zzsRlq070s7QQk1kC1qCC0Q3URb1s70s7Hzy1kC1xjwUQ3URUQ1zzzbM70TzzlnTz0Q3UQzzs70s7A701kC1nBo0M3UTrRUC0s7xbA30C1klnVk3UQAQMs0s74T0M0C1k7U00000002"
+			if (ok:=FindText(868-150000, 282-150000, 868+150000, 282+150000, 0, 0, Text_KaiChu))
+			{
+				CoordMode, Mouse
+				X:=ok.1.x, Y:=ok.1.y, Comment:=ok.1.id
+				Sleep, 500
+				Click, %X%, %Y%
+				break
+			}
+		}
 		
 		Sleep, 1000
 		
@@ -494,8 +528,6 @@ RemoveToolman()
 		
 		; click ok
 		Click, 640, 550
-		
-		Sleep, 1000
 	
 	}
 	

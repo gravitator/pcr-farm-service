@@ -1,14 +1,17 @@
 #Include pcr.ahk
 
-BasicName := "cow"
+BasicName := "scow"
 
-FileName := "account_new.txt"
+FileName := "./config/account_mana_2.txt"
 File := FileOpen(FileName, "r-d")
 if !IsObject(file)
 {
 	MsgBox Can't open "%FileName%" for reading.
 	return
 }
+
+; open LeiDian simulator
+OpenSim()
 
 Loop
 {
@@ -22,16 +25,15 @@ Loop
 	account := account_pwd[1]
 	pwd := account_pwd[2]
 	
-	If WinExist("ahk_class LDPlayerMainFrame")
+	if (A_Index = 1)
 	{
-		WinActivate
-	} else {
-		Run C:\ChangZhi\dnplayer2\dnplayer.exe
-		WinWaitActive ahk_class LDPlayerMainFrame
+		if (IsHome())
+			SwitchAccount(account,pwd)
+		else
+			Login(account,pwd)
 	}
-	
-	GoHome()
-	SwitchAccount(account, pwd)
+	else
+		SwitchAccount(account,pwd)
 	
 	; click menu
 	Click, %Bottom_home_menu_x%, %Bottom_home_menu_y%
@@ -84,6 +86,10 @@ Loop
 	Sleep, 1000
 	
 	; Output
-	OutputDebug, %account%,%pwd%,%BasicName%%A_Index%,%clipboard%
+	comma := ","
+	msg := account . comma . pwd . comma . BasicName . A_Index . comma . Clipboard
+	OutputDebug, %msg%
 	
 }
+
+ExitApp

@@ -1,6 +1,6 @@
 #Include pcr.ahk
 
-FileName := "account_mana.txt"
+FileName := "./config/account_mana.txt"
 File := FileOpen(FileName, "r-d") ;
 if !IsObject(file)
 {
@@ -33,10 +33,17 @@ Loop
 	
 	GoHome()
 	; AddEnergy(3)
+	Sleep, 1000
 	GetGift()
+	Sleep, 1000
 	GetReward()
+	Sleep, 1000
 	AddLevel()
+	Sleep, 1000
+	GetReward()
+	Sleep, 1000
 }
+ExitApp
 
 
 AddLevel()
@@ -55,7 +62,7 @@ AddLevel()
 	Text_mainstory:="|<>*160$66.00000000000000000000000000000000000C0006060000D00070CC000D000D0D70007000D0D70003U00C0D30001U00Q0D003zzzz0QEDTk3zzzz0svzzk007U00lzzU0007U01lsD00007U03zk700007U03zk700007U017U7Xs007U0070Dzs007U00D7zy0007U00C7zU01zzzy0Q07Vk0zzzy0s07Xk007U01zs3bk007U03zU3zU007U01y03z0007U00U03y8007U00003sA007U0008DsQ007U007szwM007U03znwys7zzzzXz7UTsDzzzzns00Dk7zzzzU0007k0000000003U0000000000000000000000U"
 	Loop
 	{
-		Sleep, 100
+		Sleep, 1000
 		if (ok:=FindText(0, 0, 1280, 720, 0, 0, Text_mainstory))
 			break
 	}
@@ -75,7 +82,7 @@ AddLevel()
 	}
 	
 	; goto the lastest map
-	Loop, 20
+	Loop, 15
 	{
 		start_x = 300
 		start_y = 200
@@ -87,7 +94,7 @@ AddLevel()
 		else
 			x := end_x
 		
-		y := start_y + (end_y-start_y)/20 * A_Index
+		y := end_y - (end_y-start_y)/15 * A_Index
 		
 		Click, %x%, %y%
 		Sleep, 500
@@ -111,19 +118,52 @@ AddLevel()
 	
 	MouseMove, 1169, 500
 	Send, {LButton Down}
-	Sleep, 10000
+	Sleep, 5000
 	Send, {LButton Up}
-	
 	Sleep, 500
 	
 	; click sweep
 	Click, 1000, 500
-	
 	Sleep, 1000
 	
 	; click ok
 	Click, 790, 550
 	
-	GoHome()
+	; GoHome
+	Loop
+	{
+		Sleep, 300
+		Click, 630, 710
+		Sleep, 1000
+		
+		; check no energy
+		Text_noenergy:="|<>0xD66173@0.73$27.00001zszwDzbzk000000004" ;--
+		if (ok:=FindText(0, 0, 1280, 720, 0, 0, Text_noenergy))
+		{
+			GoHome()
+			return
+		}
+		
+		; check level up
+		PixelGetColor color_plus, 1173, 498, Fast RGB		
+		if (color_plus = 0x6B9EFF)
+		{
+			Sleep, 1000
+			MouseMove, 1169, 500
+			Send, {LButton Down}
+			Sleep, 2000
+			Send, {LButton Up}
+			Sleep, 500
+			
+			; click sweep
+			Click, 1000, 500
+			Sleep, 1000
+			
+			; click ok
+			Click, 790, 550
+		}
+		
+	}
+	
 	
 }

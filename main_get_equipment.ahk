@@ -1,6 +1,6 @@
 #Include pcr.ahk
 
-FileName := "account_equipment.txt"
+FileName := "./config/account_equipment.txt"
 File := FileOpen(FileName, "r-d") ;
 if !IsObject(file)
 {
@@ -32,12 +32,22 @@ Loop
 		SwitchAccount(account,pwd)
 	
 	GoHome()
+	Sleep, 1000
 	AddEnergy(3)
+	Sleep, 1000
 	GetGift()
+	Sleep, 1000
 	GetReward()
-	DoAdvanture(7)
+	Sleep, 1000
+	DoAdvanture(3)
+	Sleep, 1000
+	GetReward()
+	Sleep, 1000
 }
 
+GoHome()
+
+ExitApp
 
 
 DoAdvanture(times)
@@ -88,7 +98,7 @@ DoAdvanture(times)
 		else
 			x := end_x
 		
-		y := start_y + (end_y-start_y)/20 * A_Index
+		y := end_y - (end_y-start_y)/15 * A_Index
 		
 		Click, %x%, %y%
 		Sleep, 500
@@ -98,9 +108,9 @@ DoAdvanture(times)
 		if (ok:=FindText(0, 0, 1280, 720, 0, 0, Text_dare))
 		{
 			Sleep, 1000
-			; move to >
+			; move to the latest map
 			MouseMove, 1234, 391
-			Loop, 20
+			Loop, 10
 			{
 				Sleep, 300
 				MouseClick
@@ -151,10 +161,12 @@ DoAdvanture(times)
 				Sleep, 300
 			
 			Click, 630, 710
+
+			Sleep, 1000
 			
 			; check no energy
-			PixelGetColor, color, 1139, 665, Fast RGB
-			if (color=0xFFFFFF)
+			Text_noenergy := "|<>0xD66173@0.73$27.00001zszwDzbzk000000004" ;--
+			if (ok:=FindText(0, 0, 1280, 720, 0, 0, Text_noenergy))
 			{
 				GoHome()
 				return

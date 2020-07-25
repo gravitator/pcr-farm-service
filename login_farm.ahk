@@ -1,7 +1,7 @@
 #Include pcr.ahk
 
 ; get account info
-FileName := "account_manager.txt"
+FileName := "./config/account_manager.txt"
 File := FileOpen(FileName, "r-d") ;
 if !IsObject(file)
 {
