@@ -250,47 +250,56 @@ DonateMana()
 	
 	Sleep, 2000
 	
-	; click luna tower
+	; click dungeon icon
 	Click, 1161, 248
 	
-	; check loading 1
+	Sleep, 1000
+	
+	; ènter the dungeon (normal level)
 	Loop
 	{
-		PixelGetColor, p1_color, 273, 558, RGB
-		if (p1_color = 0x63AAE7)
-			break
-		
-		Click, 10, 500
 		Sleep, 1000
-	}
-	
-	; check loading 2
-	Loop
-	{
-		PixelGetColor, p1_color, 273, 558, RGB
-		if (p1_color = 0x63AAE7)
+		
+		; click the dungeon (normal level)
+		Click, 333, 555
+		
+		; textfind: OK
+		Text_OK:="|<>*180$39.zzzzzzzw1ztzvz23yDwDVyDlz3wTsyDsz7z3lyDszwSDXyDzXlszlzwCCDyDzVlXzlzyC0DyDzlk1zlzyC37yDzVkwTlzwCDXyDzXlyDszwSDsz7z3lz3wTsyDwTVyDlzVy03yDyDw0ztzvzzzzzzzzzzzzzU"
+
+		if (ok:=FindText(0, 0, 786+150000, 547+150000, 0, 0, Text_OK))
+		{
+			Sleep, 500
+			CoordMode, Mouse
+			X:=ok.1.x, Y:=ok.1.y, Comment:=ok.1.id
+			Click, %X%, %Y%
+			Sleep, 500
 			break
-		
-		Click, 10, 500
-		
-		Sleep, 1000
+		}
 	}
-	
-	; click normal tower
-	Click, 273, 558
-	
-	Sleep, 2000
-	
-	; click OK
-	Click, 788, 542
 	
 	; check loading --> Help
 	Loop
 	{
+		; find color: help
 		Sleep, 500
 		PixelSearch, Px, Py, 1051, 101, 1051, 101, 0x4A8EF7, 10, Fast RGB
 		if (ErrorLevel = 0)
 			break
+		
+		; find icon: menu
+		Text_menu:="|<>*204$38.0000001zzzzzkzzzzzyTzzzzzbzzzzztzzzzzyDzzzzz00000000000000000000000000zzzzzwTzzzzzbzzzzztzzzzzyDzzzzzVzzzzzk0000000000000000000TzzzzwDzzzzzbzzzzztzzzzzyDzzzzzXzzzzzk000000U"
+		if (ok:=FindText(0, 0, 786+150000, 547+150000, 0, 0, Text_menu))
+		{
+			Sleep, 2000
+			; click menu
+			Click, 1222, 110
+			Sleep, 1000
+			; click skip
+			Click, 1069, 110
+			Sleep, 1000
+			; click skip (confirm)
+			Click, 789, 543
+		}
 	}
 	Sleep, 1000
 	
