@@ -107,14 +107,29 @@ DonateEquipment()
 			{
 				CoordMode, Mouse
 				X:=ok.1.x, Y:=ok.1.y, Comment:=ok.1.id
-				; click donate
-				Click, %X%, %Y%
-				Sleep, 1000
+				
+				Loop
+				{
+					Sleep, 1000
+					
+					; click donate
+					Click, %X%, %Y%
+					
+					; textfind: QuXiao
+					Text_cancel:="|<>*164$55.00000000000000000000000003000000613UUzzU03llksTzjzUwssw3XrzkCCQQ1ls0s33CA0swkQ007U0TyMC01zz0DzA761zzs77b7Xks0w3XlXkSQ0C1lslk7C070swQs1703UTyCw03zzkDz3Q01k0s77Vy08s0Q3XkS0AQ0C1lsD06C071sy7U37zzVzy7s3XU1kzz3y1lk0sTbXjVks0Q03nXssQ0C01vUwwC1z00PUCQ71zU0A0003000000000001"
+					if (ok:=FindText(0, 0, 1280, 720, 0, 0, Text_cancel))
+					{
+						Sleep, 1000
+						break
+					}
+				}
+				
 				; click max
 				Click, 860, 570
 				Sleep, 1000
 				; click ok
 				Click, 793, 693
+				
 				; check finish
 				Loop
 				{
