@@ -17,6 +17,4 @@ OpenSim()
 Login(account, pwd)
 GoHome()
 
-OutputDebug, au670402 login OK
-
 ExitApp

@@ -39,7 +39,7 @@ Loop
 	Sleep, 1000
 	GetReward()
 	Sleep, 1000
-	DoAdvanture(3)
+	GetLastestEquipment(3)
 	Sleep, 1000
 	GetReward()
 	Sleep, 1000
@@ -50,7 +50,7 @@ GoHome()
 ExitApp
 
 
-DoAdvanture(times)
+GetLastestEquipment(per_times)
 {
 	global Bottom_lb_x
 	global Bottom_lb_y
@@ -132,9 +132,9 @@ DoAdvanture(times)
 	; main loop
 	Loop
 	{
-		; sweep times
+		; sweep per_times
 		MouseMove, 1169, 500
-		Loop, %times%
+		Loop, %per_times%
 		{
 			if (A_index=1)
 				continue
